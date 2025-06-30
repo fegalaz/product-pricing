@@ -89,4 +89,23 @@ void whenInvalidDateThenBadRequest() throws Exception {
                     .param("brandId", "1"))
             .andExpect(status().isBadRequest());
 }
+
+@Test
+void whenMissingProductId_thenReturnsBadRequest() throws Exception {
+    mockMvc.perform(get("/api/v1/rest/prices/final-price")
+            .param("date", "2020-06-14-15.00.00")
+            .param("brandId", "1"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Falta el parámetro obligatorio: 'productId'."));
+}
+
+@Test
+void whenProductIdIsNotANumber_thenReturnsBadRequest() throws Exception {
+    mockMvc.perform(get("/api/v1/rest/prices/final-price")
+            .param("date", "2020-06-14-15.00.00")
+            .param("productId", "no-es-numero")
+            .param("brandId", "1"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("El parámetro 'productId' tiene un valor inválido."));
+}
 }
